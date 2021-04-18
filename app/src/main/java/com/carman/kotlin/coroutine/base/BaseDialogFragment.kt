@@ -13,7 +13,7 @@ import java.lang.reflect.ParameterizedType
  *@author carman
  * @time 2021-4-16 13:25
  */
-abstract class BaseDialogFragment<VB : ViewDataBinding>  : DialogFragment(){
+abstract class BaseDialogFragment<VB : ViewDataBinding>  : DialogFragment(),BaseBinding<VB>{
     protected lateinit var mBinding:VB
 
     override fun onCreateView(
@@ -43,6 +43,4 @@ abstract class BaseDialogFragment<VB : ViewDataBinding>  : DialogFragment(){
         }
         super.onResume()
     }
-
-    abstract fun VB.initBinding()
 }

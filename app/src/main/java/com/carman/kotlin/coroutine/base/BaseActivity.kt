@@ -11,7 +11,7 @@ import java.lang.reflect.ParameterizedType
  *@author carman
  * @time 2021-4-16 13:25
  */
-abstract class BaseStatsActivity<VB : ViewDataBinding> : AppCompatActivity() {
+abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity(),BaseBinding<VB> {
 
     internal val mBinding: VB by lazy(mode = LazyThreadSafetyMode.NONE) {
         val vbClass: Class<VB> =
@@ -29,7 +29,5 @@ abstract class BaseStatsActivity<VB : ViewDataBinding> : AppCompatActivity() {
         setContentView(mBinding.root)
         mBinding.initBinding()
     }
-
-    open fun VB.initBinding() {}
 
 }

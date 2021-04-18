@@ -49,5 +49,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version"
     // 协程Android支持库
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
-
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$kotlin_ktx_version"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$kotlin_ktx_version"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$kotlin_ktx_version"
 }
