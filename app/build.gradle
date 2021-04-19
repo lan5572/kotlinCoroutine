@@ -52,4 +52,9 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$kotlin_ktx_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$kotlin_ktx_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$kotlin_ktx_version"
+
+
+    implementation "io.coil-kt:coil:$coil_version"
+    implementation "io.coil-kt:coil-gif:$coil_version"
+    implementation "io.coil-kt:coil-svg:$coil_version"
 }

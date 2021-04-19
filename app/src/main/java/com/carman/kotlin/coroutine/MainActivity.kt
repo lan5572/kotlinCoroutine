@@ -1,16 +1,12 @@
 package com.carman.kotlin.coroutine
 
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import android.widget.Button
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.Group
-import androidx.lifecycle.lifecycleScope
-import androidx.viewpager.widget.ViewPager
-import kotlinx.coroutines.*
-import java.lang.NullPointerException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
     private lateinit var btn: Button
