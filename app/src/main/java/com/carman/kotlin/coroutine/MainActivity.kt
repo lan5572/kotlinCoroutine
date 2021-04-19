@@ -20,7 +20,8 @@ class MainActivity : AppCompatActivity() {
         btn.setOnClickListener {
 //            start()
 //            testCoroutineContext()
-            testCoroutineStart()
+//            testCoroutineStart()
+            testUnDispatched()
         }
     }
 
@@ -125,5 +126,18 @@ class MainActivity : AppCompatActivity() {
             Log.d("atomicJob", "CoroutineStart.UNDISPATCHED挂起后")
         }
         undispatchedJob.cancel()
+    }
+
+    private fun testUnDispatched(){
+       runBlocking (Dispatchers.Default){
+           val job = GlobalScope.launch(start = CoroutineStart.UNDISPATCHED) {
+               Log.d("${Thread.currentThread().name}线程", "-> 挂起前")
+               delay(100)
+               Log.d("${Thread.currentThread().name}线程", "-> 挂起后")
+           }
+           Log.d("${Thread.currentThread().name}线程", "-> join前")
+           job.join()
+           Log.d("${Thread.currentThread().name}线程", "-> join后")
+       }
     }
 }
