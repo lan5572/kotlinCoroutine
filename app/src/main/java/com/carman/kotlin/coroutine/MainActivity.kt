@@ -19,7 +19,8 @@ class MainActivity : AppCompatActivity() {
         btn = findViewById(R.id.btn)
         btn.setOnClickListener {
 //            start()
-            testCoroutineContext()
+//            testCoroutineContext()
+            testCoroutineStart()
         }
     }
 
@@ -98,5 +99,31 @@ class MainActivity : AppCompatActivity() {
         Log.d("coroutineContext2", "$coroutineContext2")
         val coroutineContext3 = coroutineContext2 + Dispatchers.Main + CoroutineName("这是第三个上下文")
         Log.d("coroutineContext3", "$coroutineContext3")
+    }
+
+    private fun testCoroutineStart(){
+        val defaultJob = GlobalScope.launch{
+            Log.d("defaultJob", "CoroutineStart.DEFAULT")
+        }
+        defaultJob.cancel()
+
+        val lazyJob = GlobalScope.launch(start = CoroutineStart.LAZY){
+            Log.d("lazyJob", "CoroutineStart.LAZY")
+        }
+
+        val atomicJob = GlobalScope.launch(start = CoroutineStart.ATOMIC){
+            Log.d("atomicJob", "CoroutineStart.ATOMIC挂起前")
+            delay(100)
+            Log.d("atomicJob", "CoroutineStart.ATOMIC挂起后")
+        }
+
+        atomicJob.cancel()
+
+        val undispatchedJob = GlobalScope.launch(start = CoroutineStart.UNDISPATCHED){
+            Log.d("undispatchedJob", "CoroutineStart.UNDISPATCHED挂起前")
+            delay(100)
+            Log.d("atomicJob", "CoroutineStart.UNDISPATCHED挂起后")
+        }
+        undispatchedJob.cancel()
     }
 }
