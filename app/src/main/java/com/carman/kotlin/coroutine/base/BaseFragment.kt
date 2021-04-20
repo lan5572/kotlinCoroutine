@@ -35,4 +35,9 @@ open abstract class BaseFragment<VB : ViewDataBinding>: Fragment(),BaseBinding<V
         super.onViewCreated(view, savedInstanceState)
         mBinding.initBinding()
     }
+
+
+    open fun onBackPressed():Boolean {
+        return false
+    }
 }

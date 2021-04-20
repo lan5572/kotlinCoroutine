@@ -129,8 +129,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun testUnDispatched(){
-       runBlocking (Dispatchers.Default){
-           val job = GlobalScope.launch(start = CoroutineStart.UNDISPATCHED) {
+        GlobalScope.launch(Dispatchers.Main){
+           val job = launch(start = CoroutineStart.UNDISPATCHED) {
                Log.d("${Thread.currentThread().name}线程", "-> 挂起前")
                delay(100)
                Log.d("${Thread.currentThread().name}线程", "-> 挂起后")
