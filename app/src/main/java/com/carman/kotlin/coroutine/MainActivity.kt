@@ -8,6 +8,7 @@ import kotlinx.coroutines.*
 import java.lang.NullPointerException
 import kotlin.coroutines.ContinuationInterceptor
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.suspendCoroutine
 
 class MainActivity : AppCompatActivity() {
 
@@ -214,28 +215,30 @@ class MainActivity : AppCompatActivity() {
         val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
             Log.d("exceptionHandler", "${coroutineContext[CoroutineName]} $throwable")
         }
+       val coroutineScope = CoroutineScope(SupervisorJob() +CoroutineName("coroutineScope"))
         GlobalScope.launch(Dispatchers.Main + CoroutineName("scope1") + exceptionHandler) {
-            supervisorScope {
-                Log.d("scope", "--------- 1")
-                launch(CoroutineName("scope2") + exceptionHandler) {
-                    Log.d("scope", "--------- 2")
+            with(coroutineScope){
+                val scope2 = launch(CoroutineName("scope2") + exceptionHandler) {
+                    Log.d("scope", "1--------- ${coroutineContext[CoroutineName]}")
                     throw  NullPointerException("空指针")
-                    Log.d("scope", "--------- 3")
-                    val scope3 = launch(CoroutineName("scope3") + exceptionHandler) {
-                        Log.d("scope", "--------- 4")
-                        delay(2000)
-                        Log.d("scope", "--------- 5")
-                    }
-                    scope3.join()
                 }
-                val scope4 = launch(CoroutineName("scope4") + exceptionHandler) {
-                    Log.d("scope", "--------- 6")
+                val scope3 = launch(CoroutineName("scope3") + exceptionHandler) {
+                    scope2.join()
+                    Log.d("scope", "2--------- ${coroutineContext[CoroutineName]}")
                     delay(2000)
-                    Log.d("scope", "--------- 7")
+                    Log.d("scope", "3--------- ${coroutineContext[CoroutineName]}")
                 }
-                scope4.join()
-                Log.d("scope", "--------- 8")
+                scope2.join()
+                Log.d("scope", "4--------- ${coroutineContext[CoroutineName]}")
+                coroutineScope.cancel()
+                scope3.join()
+                Log.d("scope", "5---------${coroutineContext[CoroutineName]}")
             }
+            Log.d("scope", "6--------- ${coroutineContext[CoroutineName]}")
         }
+    }
+
+    private suspend fun test(){
+
     }
 }
