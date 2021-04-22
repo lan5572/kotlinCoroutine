@@ -5,10 +5,8 @@ import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.*
-import java.lang.NullPointerException
 import kotlin.coroutines.ContinuationInterceptor
 import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.suspendCoroutine
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,6 +27,7 @@ class MainActivity : AppCompatActivity() {
 //            testCoroutineScope2()
 //            testCoroutineScope4()
 //            testCoroutineScope4()
+            testException()
         }
     }
 
@@ -51,14 +50,14 @@ class MainActivity : AppCompatActivity() {
                  }
              }*/
 
-         GlobalScope.launch {
-             for (index in 1 until  10) {
-                 //并发执行
-                 launch {
-                     Log.d("launch$index", "启动一个协程")
-                 }
-             }
-         }
+//         GlobalScope.launch {
+//             for (index in 1 until  10) {
+//                 //并发执行
+//                 launch {
+//                     Log.d("launch$index", "启动一个协程")
+//                 }
+//             }
+//         }
 
 
         /*GlobalScope.launch{
@@ -216,7 +215,7 @@ class MainActivity : AppCompatActivity() {
         val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
             Log.d("exceptionHandler", "${coroutineContext[CoroutineName]} $throwable")
         }
-       val coroutineScope = CoroutineScope(SupervisorJob() +CoroutineName("coroutineScope"))
+       val coroutineScope = CoroutineScope(SupervisorJob() + CoroutineName("coroutineScope"))
         GlobalScope.launch(Dispatchers.Main + CoroutineName("scope1") + exceptionHandler) {
             with(coroutineScope){
                 val scope2 = launch(CoroutineName("scope2") + exceptionHandler) {
@@ -241,5 +240,56 @@ class MainActivity : AppCompatActivity() {
 
     private suspend fun test(){
 
+    }
+
+    private fun testException(){
+        val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+            Log.d("exceptionHandler", "${coroutineContext[CoroutineName].toString()} 处理异常 ：*/$throwable")
+        }
+        GlobalScope.launch {
+
+            coroutineScope {
+
+            }
+            supervisorScope {
+
+            }
+
+        }
+
+
+      /*  GlobalScope.launch{
+            launch(start = CoroutineStart.UNDISPATCHED) {
+                Log.d("${Thread.currentThread().name}", " 我要开始抛异常了")
+                try {
+                    throw NullPointerException("异常测试")
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+            Log.d("${Thread.currentThread().name}", "end")
+        }
+       val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+           Log.d("exceptionHandler", "${coroutineContext[CoroutineName].toString()} 处理异常 ：$throwable")
+       }
+       GlobalScope.launch(CoroutineName("父协程") + exceptionHandler){
+           val job = launch(CoroutineName("子协程")) {
+               Log.d("${Thread.currentThread().name}","我要开始抛异常了" )
+               throw NullPointerException("空指针异常")
+           }
+
+           for (index in 0..10){
+               launch(CoroutineName("子协程$index")) {
+                   Log.d("${Thread.currentThread().name}","${coroutineContext[CoroutineName]}" )
+               }
+           }
+
+           try {
+               job.join()
+           } catch (e: Exception) {
+               e.printStackTrace()
+           }
+           Log.d("${Thread.currentThread().name}", "end")
+        } */
     }
 }
