@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         btn = findViewById(R.id.btn)
+
         btn.setOnClickListener {
 //            start()
 //            testCoroutineContext()
@@ -27,21 +28,21 @@ class MainActivity : AppCompatActivity() {
 //            testCoroutineScope()
 //            testCoroutineScope2()
 //            testCoroutineScope4()
-            testCoroutineScope4()
+//            testCoroutineScope4()
         }
     }
 
     private fun start() {
 
-        GlobalScope.launch(Dispatchers.Main) {
-            val result = withContext(Dispatchers.IO) {
-                //网络请求...
-                "请求结果"
-            }
-            btn.text = result
-        }
+//        GlobalScope.launch(Dispatchers.Main) {
+//            val result = withContext(Dispatchers.IO) {
+//                //网络请求...
+//                "请求结果"
+//            }
+//            btn.text = result
+//        }
 
-        /*     GlobalScope.launch(Dispatchers.Main) {
+            /* GlobalScope.launch(Dispatchers.Main) {
                  for (index in 1 until  10) {
                      //同步执行
                      launch {
@@ -50,14 +51,14 @@ class MainActivity : AppCompatActivity() {
                  }
              }*/
 
-        /* GlobalScope.launch {
+         GlobalScope.launch {
              for (index in 1 until  10) {
                  //并发执行
                  launch {
                      Log.d("launch$index", "启动一个协程")
                  }
              }
-         }*/
+         }
 
 
         /*GlobalScope.launch{
