@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import java.lang.reflect.ParameterizedType
+import com.carman.kotlin.coroutine.extensions.getViewBinding
 
 /**
  *
@@ -25,9 +25,7 @@ open abstract class BaseFragment<VB : ViewDataBinding>: Fragment(),BaseBinding<V
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val vbClass: Class<VB> = (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[0] as Class<VB>
-        val inflate = vbClass.getDeclaredMethod("inflate",LayoutInflater::class.java, ViewGroup::class.java, Boolean::class.java)
-        mBinding = inflate.invoke(null, layoutInflater, container, false) as VB
+        mBinding = getViewBinding(inflater,container)
         return mBinding.root
     }
 

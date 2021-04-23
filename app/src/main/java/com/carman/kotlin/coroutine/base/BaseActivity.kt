@@ -2,11 +2,10 @@ package com.carman.kotlin.coroutine.base
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import java.lang.reflect.ParameterizedType
+import com.carman.kotlin.coroutine.extensions.getViewBinding
 
 /**
  *
@@ -16,10 +15,7 @@ import java.lang.reflect.ParameterizedType
 abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity(), BaseBinding<VB> {
 
     internal val mBinding: VB by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
-        val vbClass: Class<VB> =
-                (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[0] as Class<VB>
-        val inflate = vbClass.getDeclaredMethod("inflate", LayoutInflater::class.java)
-        inflate.invoke(null, layoutInflater) as VB
+       getViewBinding(layoutInflater)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

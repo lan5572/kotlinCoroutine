@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
 //            testUnDispatched()
 //            testCoroutineScope()
 //            testCoroutineScope2()
-//            testCoroutineScope4()
+//            testCoroutineScope3()
 //            testCoroutineScope4()
             testException()
         }
@@ -189,18 +189,18 @@ class MainActivity : AppCompatActivity() {
         GlobalScope.launch(Dispatchers.Main + CoroutineName("scope1") + exceptionHandler) {
             supervisorScope {
                 Log.d("scope", "--------- 1")
-                launch(CoroutineName("scope2") + exceptionHandler) {
+                launch(CoroutineName("scope2")) {
                     Log.d("scope", "--------- 2")
                     throw  NullPointerException("空指针")
                     Log.d("scope", "--------- 3")
-                    val scope3 = launch(CoroutineName("scope3") + exceptionHandler) {
+                    val scope3 = launch(CoroutineName("scope3")) {
                         Log.d("scope", "--------- 4")
                         delay(2000)
                         Log.d("scope", "--------- 5")
                     }
                     scope3.join()
                 }
-                val scope4 = launch(CoroutineName("scope4") + exceptionHandler) {
+                val scope4 = launch(CoroutineName("scope4")) {
                     Log.d("scope", "--------- 6")
                     delay(2000)
                     Log.d("scope", "--------- 7")
@@ -243,19 +243,33 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun testException(){
-        val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
-            Log.d("exceptionHandler", "${coroutineContext[CoroutineName].toString()} 处理异常 ：*/$throwable")
-        }
-        GlobalScope.launch {
+//        var a:MutableList<Int> = mutableListOf(1,2,3)
+//        GlobalScope.launch{
+//           launch {
+//                Log.d("${Thread.currentThread().name}","我要开始抛异常了" )
+//                try {
+//                    launch{
+//                        Log.d("${Thread.currentThread().name}", "${a[1]}")
+//                    }
+//                    a.clear()
+//                } catch (e: Exception) {
+//                    e.printStackTrace()
+//                }
+//
+//            }
+//            Log.d("${Thread.currentThread().name}", "end")
+//        }
 
-            coroutineScope {
-
-            }
-            supervisorScope {
-
-            }
-
-        }
+//        val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+//            Log.d("exceptionHandler", "${coroutineContext[CoroutineName]} ：$throwable")
+//        }
+//        GlobalScope.launch(CoroutineName("异常处理") + exceptionHandler){
+//            launch {
+//                Log.d("${Thread.currentThread().name}","我要开始抛异常了" )
+//                throw NullPointerException("异常测试")
+//            }
+//            Log.d("${Thread.currentThread().name}", "end")
+//        }
 
 
       /*  GlobalScope.launch{
@@ -291,5 +305,45 @@ class MainActivity : AppCompatActivity() {
            }
            Log.d("${Thread.currentThread().name}", "end")
         } */
+
+
+        /*val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+            Log.d("exceptionHandler", "${coroutineContext[CoroutineName].toString()} 处理异常 ：$throwable")
+        }
+        GlobalScope.launch(exceptionHandler) {
+            supervisorScope {
+                launch(CoroutineName("异常子协程")) {
+                    Log.d("${Thread.currentThread().name}", "我要开始抛异常了")
+                    throw NullPointerException("空指针异常")
+                }
+                for (index in 0..10) {
+                    launch(CoroutineName("子协程$index")) {
+                        Log.d("${Thread.currentThread().name}正常执行", "$index")
+                        if (index %3 == 0){
+                            throw NullPointerException("子协程${index}空指针异常")
+                        }
+                    }
+                }
+            }
+        }*/
+
+        val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+            Log.d("exceptionHandler", "${coroutineContext[CoroutineName].toString()} 处理异常 ：$throwable")
+        }
+        val supervisorScope = CoroutineScope(SupervisorJob() + exceptionHandler)
+        with(supervisorScope) {
+            launch(CoroutineName("异常子协程")) {
+                Log.d("${Thread.currentThread().name}", "我要开始抛异常了")
+                throw NullPointerException("空指针异常")
+            }
+            for (index in 0..10) {
+                launch(CoroutineName("子协程$index")) {
+                    Log.d("${Thread.currentThread().name}正常执行", "$index")
+                    if (index % 3 == 0) {
+                        throw NullPointerException("子协程${index}空指针异常")
+                    }
+                }
+            }
+        }
     }
 }
