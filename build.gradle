@@ -15,7 +15,7 @@ buildscript {
         nav_version = "2.3.5"
         glide_version = "4.11.0"
         room_version = "2.2.5"
-        room_ktx_version = "2.2.6"
+        room_ktx_version = "2.3.0"
     }
     repositories {
         google()

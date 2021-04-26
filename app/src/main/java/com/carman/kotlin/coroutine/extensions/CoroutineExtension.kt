@@ -12,6 +12,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.carman.kotlin.coroutine.exception.GlobalCoroutineExceptionHandler
 import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
 fun Activity.getLoginIc(): String {
     val cm = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -144,6 +145,19 @@ inline fun View.requestMain(errCode:Int = -1, errMsg:String = "", report:Boolean
     } else {
         throw IllegalStateException("the job couldn't be run,because context isn't ComponentActivity.")
     }
+}
+
+@ExperimentalStdlibApi
+suspend inline fun <T>  CoroutineScope.delayWithContext(delayTime: Long,context: CoroutineContext,  crossinline block: suspend CoroutineScope.() -> T) {
+    if (context[CoroutineDispatcher] is MainCoroutineDispatcher) {
+        withContext(Dispatchers.IO) {
+            delay(delayTime)
+        }
+    } else {
+        delay(delayTime)
+    }
+    block.invoke(this)
+
 }
 
 
