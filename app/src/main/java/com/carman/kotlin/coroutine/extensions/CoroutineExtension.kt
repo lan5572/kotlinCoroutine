@@ -7,9 +7,7 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleCoroutineScope
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.*
 import com.carman.kotlin.coroutine.exception.GlobalCoroutineExceptionHandler
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -19,7 +17,7 @@ fun Activity.getLoginIc(): String {
     cm.primaryClip?.let {
         val item = if (it.itemCount > 0) it.getItemAt(0) else null
         val ic = item?.text?.toString() ?: ""
-        Log.d("clipData","clipData ic :$ic")
+        Log.d("clipData", "clipData ic :$ic")
         return ic
     }
     return ""
@@ -31,10 +29,11 @@ fun Activity.getLoginIc(): String {
  * @param report 是否需要上报
  * @param block 需要执行的任务
  */
-inline fun AppCompatActivity.requestMain(errCode:Int = -1, errMsg:String = "",
-                                         report:Boolean = false, crossinline block:suspend CoroutineScope.() -> Unit) {
-    lifecycleScope.launch(Dispatchers.Main + GlobalCoroutineExceptionHandler(errCode,errMsg, report)){
-            block()
+inline fun AppCompatActivity.requestMain(
+        errCode: Int = -1, errMsg: String = "", report: Boolean = false,
+        crossinline block: suspend CoroutineScope.() -> Unit) {
+    lifecycleScope.launch(GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
+        block.invoke(this)
     }
 }
 
@@ -45,9 +44,11 @@ inline fun AppCompatActivity.requestMain(errCode:Int = -1, errMsg:String = "",
  * @param report 是否需要上报
  * @param block 需要执行的任务
  */
-inline fun AppCompatActivity.requestIO(errCode:Int = -1, errMsg:String = "", report:Boolean = false, crossinline block: suspend CoroutineScope.() -> Unit):Job{
-    return lifecycleScope.launch(Dispatchers.IO + GlobalCoroutineExceptionHandler(errCode,errMsg, report)) {
-        block()
+inline fun AppCompatActivity.requestIO(
+        errCode: Int = -1, errMsg: String = "", report: Boolean = false,
+        crossinline block: suspend CoroutineScope.() -> Unit): Job {
+    return lifecycleScope.launch(Dispatchers.IO + GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
+        block.invoke(this)
     }
 }
 
@@ -57,12 +58,14 @@ inline fun AppCompatActivity.requestIO(errCode:Int = -1, errMsg:String = "", rep
  * @param report 是否需要上报
  * @param block 需要执行的任务
  */
-inline fun AppCompatActivity.delayMainThread(errCode:Int = -1, errMsg:String = "", report:Boolean = false, delayTime: Long, crossinline block: suspend CoroutineScope.() -> Unit) {
-    lifecycleScope.launch(Dispatchers.Main+GlobalCoroutineExceptionHandler(errCode,errMsg, report)) {
+inline fun AppCompatActivity.delayMainThread(
+        delayTime: Long,errCode: Int = -1, errMsg: String = "", report: Boolean = false,
+       crossinline block: suspend CoroutineScope.() -> Unit) {
+    lifecycleScope.launch(GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
         withContext(Dispatchers.IO) {
             delay(delayTime)
         }
-        block()
+        block.invoke(this)
     }
 }
 
@@ -72,20 +75,25 @@ inline fun AppCompatActivity.delayMainThread(errCode:Int = -1, errMsg:String = "
  * @param report 是否需要上报
  * @param block 需要执行的任务
  */
-inline fun Fragment.requestMain(errCode:Int = -1, errMsg:String = "", report:Boolean = false, crossinline block: suspend CoroutineScope.() -> Unit) {
-    lifecycleScope.launch(Dispatchers.Main+GlobalCoroutineExceptionHandler(errCode,errMsg, report)) {
-        block()
+inline fun Fragment.requestMain(
+        errCode: Int = -1, errMsg: String = "", report: Boolean = false,
+        crossinline block: suspend CoroutineScope.() -> Unit) {
+    lifecycleScope.launch(GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
+        block.invoke(this)
     }
 }
+
 /**
  * @param errCode 错误码
  * @param errMsg 简要错误信息
  * @param report 是否需要上报
  * @param block 需要执行的任务
  */
-inline fun Fragment.requestIO(errCode:Int = -1, errMsg:String = "", report:Boolean = false, crossinline block: suspend CoroutineScope.() -> Unit) {
-    lifecycleScope.launch(Dispatchers.IO+GlobalCoroutineExceptionHandler(errCode,errMsg, report)) {
-        block()
+inline fun Fragment.requestIO(
+        errCode: Int = -1, errMsg: String = "", report: Boolean = false,
+        crossinline block: suspend CoroutineScope.() -> Unit) {
+    lifecycleScope.launch(Dispatchers.IO + GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
+        block.invoke(this)
     }
 }
 
@@ -97,14 +105,17 @@ inline fun Fragment.requestIO(errCode:Int = -1, errMsg:String = "", report:Boole
  * @param delayTime 延时时间
  * @param block 需要执行的任务
  */
-inline fun Fragment.delayMainThread(errCode:Int = -1, errMsg:String = "", report:Boolean = false, delayTime: Long, crossinline block: suspend CoroutineScope.() -> Unit) {
-    lifecycleScope.launch(Dispatchers.Main + GlobalCoroutineExceptionHandler(errCode,errMsg, report)) {
+inline fun Fragment.delayMainThread(
+        delayTime: Long, errCode: Int = -1, errMsg: String = "", report: Boolean = false,
+        crossinline block: suspend CoroutineScope.() -> Unit) {
+    lifecycleScope.launch(GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
         withContext(Dispatchers.IO) {
             delay(delayTime)
         }
-        block()
+        block.invoke(this)
     }
 }
+
 
 
 
@@ -114,9 +125,11 @@ inline fun Fragment.delayMainThread(errCode:Int = -1, errMsg:String = "", report
  * @param report 是否需要上报
  * @param block 需要执行的任务
  */
-inline fun LifecycleCoroutineScope.requestMain(errCode:Int = -1, errMsg:String = "", report:Boolean = false, crossinline block: suspend CoroutineScope.() -> Unit) {
-    launch(Dispatchers.Main+GlobalCoroutineExceptionHandler(errCode,errMsg, report)) {
-        block()
+inline fun ViewModel.requestMain(
+        errCode: Int = -1, errMsg: String = "", report: Boolean = false,
+        crossinline block: suspend CoroutineScope.() -> Unit) {
+    viewModelScope.launch(GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
+        block.invoke(this)
     }
 }
 
@@ -126,9 +139,30 @@ inline fun LifecycleCoroutineScope.requestMain(errCode:Int = -1, errMsg:String =
  * @param report 是否需要上报
  * @param block 需要执行的任务
  */
-inline fun LifecycleCoroutineScope.requestIO(errCode:Int = -1, errMsg:String = "", report:Boolean = false, crossinline block: suspend CoroutineScope.() -> Unit) {
-    launch(Dispatchers.IO + GlobalCoroutineExceptionHandler(errCode,errMsg, report)) {
-        block()
+inline fun ViewModel.requestIO(
+        errCode: Int = -1, errMsg: String = "", report: Boolean = false,
+        crossinline block: suspend CoroutineScope.() -> Unit) {
+    viewModelScope.launch(Dispatchers.IO + GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
+        block.invoke(this)
+    }
+}
+
+
+/**
+ * @param errCode 错误码
+ * @param errMsg 简要错误信息
+ * @param report 是否需要上报
+ * @param delayTime 延时时间
+ * @param block 需要执行的任务
+ */
+inline fun ViewModel.delayMainThread(
+        delayTime: Long, errCode: Int = -1, errMsg: String = "", report: Boolean = false,
+        crossinline block: suspend CoroutineScope.() -> Unit) {
+    viewModelScope.launch(GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
+        withContext(Dispatchers.IO) {
+            delay(delayTime)
+        }
+        block.invoke(this)
     }
 }
 
@@ -139,7 +173,32 @@ inline fun LifecycleCoroutineScope.requestIO(errCode:Int = -1, errMsg:String = "
  * @param report 是否需要上报
  * @param block 需要执行的任务
  */
-inline fun View.requestMain(errCode:Int = -1, errMsg:String = "", report:Boolean = false, crossinline block: suspend CoroutineScope.() -> Unit) {
+inline fun LifecycleCoroutineScope.requestMain(errCode: Int = -1, errMsg: String = "", report: Boolean = false, crossinline block: suspend CoroutineScope.() -> Unit) {
+    launch(GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
+        block.invoke(this)
+    }
+}
+
+/**
+ * @param errCode 错误码
+ * @param errMsg 简要错误信息
+ * @param report 是否需要上报
+ * @param block 需要执行的任务
+ */
+inline fun LifecycleCoroutineScope.requestIO(errCode: Int = -1, errMsg: String = "", report: Boolean = false, crossinline block: suspend CoroutineScope.() -> Unit) {
+    launch(Dispatchers.IO + GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
+        block.invoke(this)
+    }
+}
+
+
+/**
+ * @param errCode 错误码
+ * @param errMsg 简要错误信息
+ * @param report 是否需要上报
+ * @param block 需要执行的任务
+ */
+inline fun View.requestMain(errCode: Int = -1, errMsg: String = "", report: Boolean = false, crossinline block: suspend CoroutineScope.() -> Unit) {
     if (context is LifecycleOwner) {
         (context as LifecycleOwner).lifecycleScope.requestMain(errCode, errMsg, report, block)
     } else {
@@ -148,7 +207,7 @@ inline fun View.requestMain(errCode:Int = -1, errMsg:String = "", report:Boolean
 }
 
 @ExperimentalStdlibApi
-suspend inline fun <T>  CoroutineScope.delayWithContext(delayTime: Long,context: CoroutineContext,  crossinline block: suspend CoroutineScope.() -> T) {
+suspend inline fun <T> CoroutineScope.delayWithContext(delayTime: Long, context: CoroutineContext, crossinline block: suspend CoroutineScope.() -> T) {
     if (context[CoroutineDispatcher] is MainCoroutineDispatcher) {
         withContext(Dispatchers.IO) {
             delay(delayTime)

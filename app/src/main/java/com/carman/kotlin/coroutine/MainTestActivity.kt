@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.*
 import kotlin.coroutines.ContinuationInterceptor
 import kotlin.coroutines.CoroutineContext
@@ -15,9 +16,18 @@ import kotlin.coroutines.CoroutineContext
  */
 class MainTestActivity : AppCompatActivity() {
 
+    init {
+        lifecycleScope.launchWhenResumed {
+            Log.d("init", "在类初始化位置启动协程")
+        }
+    }
+
     companion object Key : CoroutineContext.Key<ContinuationInterceptor>
 
     private lateinit var btn: Button
+    private val mainScope = MainScope()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_test)
@@ -36,17 +46,47 @@ class MainTestActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        Log.d("onResume", "onResume")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job?.cancel()
+    }
+    private var job:Job?= null
+
     private fun start() {
-        GlobalScope.launch {
-//            launch {
-//                throw  NullPointerException("空指针")
-//            }
+        mainScope.launch {
+            launch {
+                throw  NullPointerException("空指针")
+            }
             val result = withContext(Dispatchers.IO) {
                 //网络请求...
                 "请求结果"
             }
+            launch {
+                //网络请求3...
+            }
             btn.text = result
         }
+
+
+//        job =  GlobalScope.launch(Dispatchers.Main + SupervisorJob(),CoroutineStart.UNDISPATCHED) {
+//            launch {
+////                throw  NullPointerException("空指针")
+//            }
+//            val result = withContext(Dispatchers.IO) {
+//                //网络请求...
+//                "请求结果"
+//            }
+//            launch {
+//                //网络请求3...
+//            }
+//            btn.text = result
+//        }
+
 
             /* GlobalScope.launch(Dispatchers.Main) {
                  for (index in 1 until  10) {

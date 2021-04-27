@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.carman.kotlin.coroutine.extensions.getViewBinding
 
 /**
@@ -26,6 +27,7 @@ open abstract class BaseFragment<VB : ViewDataBinding>: Fragment(),BaseBinding<V
         savedInstanceState: Bundle?
     ): View? {
         mBinding = getViewBinding(inflater,container)
+        lifecycleScope.launchWhenStarted {  }
         return mBinding.root
     }
 

@@ -3,12 +3,12 @@ package com.carman.kotlin.coroutine
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import com.carman.kotlin.coroutine.base.BaseActivity
 import com.carman.kotlin.coroutine.databinding.ActivityMainBinding
-import com.carman.kotlin.coroutine.extensions.delayWithContext
-import com.carman.kotlin.coroutine.extensions.toList
+import com.carman.kotlin.coroutine.extensions.*
 import kotlinx.coroutines.*
 
 /**
@@ -16,23 +16,23 @@ import kotlinx.coroutines.*
  * @author carman
  * @time 2021-4-26 12:11
  */
-class MainActivity : BaseActivity<ActivityMainBinding>() {
-
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        DataBindingUtil.inflate<ActivityMainBinding>(layoutInflater,R.layout.activity_main,null,false)
-    }
-    @ExperimentalStdlibApi
-    override fun ActivityMainBinding.initBinding() {
-        val array = 1.toList(10)
-        array.forEach {
-            Log.d("中缀","$it")
+        setContentView(R.layout.activity_main)
+        requestMain {
+            delay(2000)
+            Toast.makeText(this@MainActivity,"haha",Toast.LENGTH_SHORT).show()
         }
+        requestIO {
+            loadNetData()
+        }
+        delayMainThread(100){
+            Toast.makeText(this@MainActivity,"haha",Toast.LENGTH_SHORT).show()
+        }
+    }
 
-//        lifecycleScope.launch {
-//            delayWithContext(1010,Dispatchers.Main){
-//                Toast.makeText(this@MainActivity,"演示操作",Toast.LENGTH_SHORT).show()
-//            }
-//        }
+    private suspend fun loadNetData(){
+        //网络加载
     }
 }
