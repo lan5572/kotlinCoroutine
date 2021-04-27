@@ -25,3 +25,11 @@ inline fun String.replaceBlank(): String {
     val m: Matcher = p.matcher(this)
     return m.replaceAll("")
 }
+
+infix fun Int.toList(x:Int): Array<Int> {
+    var array = mutableListOf<Int>()
+    for (index in this..x){
+        array = (array + index) as MutableList<Int>
+    }
+    return array.toTypedArray()
+}

@@ -1,12 +1,14 @@
 package com.carman.kotlin.coroutine
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import com.carman.kotlin.coroutine.base.BaseActivity
 import com.carman.kotlin.coroutine.databinding.ActivityMainBinding
 import com.carman.kotlin.coroutine.extensions.delayWithContext
+import com.carman.kotlin.coroutine.extensions.toList
 import kotlinx.coroutines.*
 
 /**
@@ -22,11 +24,15 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
     @ExperimentalStdlibApi
     override fun ActivityMainBinding.initBinding() {
-
-        lifecycleScope.launch {
-            delayWithContext(1010,Dispatchers.Main){
-                Toast.makeText(this@MainActivity,"演示操作",Toast.LENGTH_SHORT).show()
-            }
+        val array = 1.toList(10)
+        array.forEach {
+            Log.d("中缀","$it")
         }
+
+//        lifecycleScope.launch {
+//            delayWithContext(1010,Dispatchers.Main){
+//                Toast.makeText(this@MainActivity,"演示操作",Toast.LENGTH_SHORT).show()
+//            }
+//        }
     }
 }

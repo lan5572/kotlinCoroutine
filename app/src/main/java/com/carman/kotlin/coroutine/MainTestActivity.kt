@@ -24,7 +24,7 @@ class MainTestActivity : AppCompatActivity() {
         btn = findViewById(R.id.btn)
 
         btn.setOnClickListener {
-//            start()
+            start()
 //            testCoroutineContext()
 //            testCoroutineStart()
 //            testUnDispatched()
@@ -32,19 +32,21 @@ class MainTestActivity : AppCompatActivity() {
 //            testCoroutineScope2()
 //            testCoroutineScope3()
 //            testCoroutineScope4()
-            testException()
+//            testException()
         }
     }
 
     private fun start() {
-
-//        GlobalScope.launch(Dispatchers.Main) {
-//            val result = withContext(Dispatchers.IO) {
-//                //网络请求...
-//                "请求结果"
+        GlobalScope.launch {
+//            launch {
+//                throw  NullPointerException("空指针")
 //            }
-//            btn.text = result
-//        }
+            val result = withContext(Dispatchers.IO) {
+                //网络请求...
+                "请求结果"
+            }
+            btn.text = result
+        }
 
             /* GlobalScope.launch(Dispatchers.Main) {
                  for (index in 1 until  10) {
