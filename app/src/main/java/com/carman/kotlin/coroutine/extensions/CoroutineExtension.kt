@@ -12,16 +12,8 @@ import com.carman.kotlin.coroutine.exception.GlobalCoroutineExceptionHandler
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-fun Activity.getLoginIc(): String {
-    val cm = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    cm.primaryClip?.let {
-        val item = if (it.itemCount > 0) it.getItemAt(0) else null
-        val ic = item?.text?.toString() ?: ""
-        Log.d("clipData", "clipData ic :$ic")
-        return ic
-    }
-    return ""
-}
+@Suppress("FunctionName")
+public fun NormalScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
 
 /**
  * @param errCode 错误码
@@ -58,7 +50,7 @@ inline fun AppCompatActivity.requestIO(
  * @param report 是否需要上报
  * @param block 需要执行的任务
  */
-inline fun AppCompatActivity.delayMainThread(
+inline fun AppCompatActivity.delayMain(
         delayTime: Long,errCode: Int = -1, errMsg: String = "", report: Boolean = false,
        crossinline block: suspend CoroutineScope.() -> Unit) {
     lifecycleScope.launch(GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
@@ -105,7 +97,7 @@ inline fun Fragment.requestIO(
  * @param delayTime 延时时间
  * @param block 需要执行的任务
  */
-inline fun Fragment.delayMainThread(
+inline fun Fragment.delayMain(
         delayTime: Long, errCode: Int = -1, errMsg: String = "", report: Boolean = false,
         crossinline block: suspend CoroutineScope.() -> Unit) {
     lifecycleScope.launch(GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
@@ -155,7 +147,7 @@ inline fun ViewModel.requestIO(
  * @param delayTime 延时时间
  * @param block 需要执行的任务
  */
-inline fun ViewModel.delayMainThread(
+inline fun ViewModel.delayMain(
         delayTime: Long, errCode: Int = -1, errMsg: String = "", report: Boolean = false,
         crossinline block: suspend CoroutineScope.() -> Unit) {
     viewModelScope.launch(GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
@@ -166,43 +158,11 @@ inline fun ViewModel.delayMainThread(
     }
 }
 
-
-/**
- * @param errCode 错误码
- * @param errMsg 简要错误信息
- * @param report 是否需要上报
- * @param block 需要执行的任务
- */
-inline fun LifecycleCoroutineScope.requestMain(errCode: Int = -1, errMsg: String = "", report: Boolean = false, crossinline block: suspend CoroutineScope.() -> Unit) {
+inline fun LifecycleCoroutineScope.requestMain(
+    errCode: Int = -1, errMsg: String = "", report: Boolean = false,
+    crossinline block: suspend CoroutineScope.() -> Unit) {
     launch(GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
         block.invoke(this)
-    }
-}
-
-/**
- * @param errCode 错误码
- * @param errMsg 简要错误信息
- * @param report 是否需要上报
- * @param block 需要执行的任务
- */
-inline fun LifecycleCoroutineScope.requestIO(errCode: Int = -1, errMsg: String = "", report: Boolean = false, crossinline block: suspend CoroutineScope.() -> Unit) {
-    launch(Dispatchers.IO + GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
-        block.invoke(this)
-    }
-}
-
-
-/**
- * @param errCode 错误码
- * @param errMsg 简要错误信息
- * @param report 是否需要上报
- * @param block 需要执行的任务
- */
-inline fun View.requestMain(errCode: Int = -1, errMsg: String = "", report: Boolean = false, crossinline block: suspend CoroutineScope.() -> Unit) {
-    if (context is LifecycleOwner) {
-        (context as LifecycleOwner).lifecycleScope.requestMain(errCode, errMsg, report, block)
-    } else {
-        throw IllegalStateException("the job couldn't be run,because context isn't ComponentActivity.")
     }
 }
 

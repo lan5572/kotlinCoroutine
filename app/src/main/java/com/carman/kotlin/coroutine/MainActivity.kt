@@ -1,10 +1,12 @@
 package com.carman.kotlin.coroutine
 
+import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.carman.kotlin.coroutine.base.BaseActivity
 import com.carman.kotlin.coroutine.databinding.ActivityMainBinding
@@ -20,6 +22,16 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val dialog = Dialog(this)
+        dialog.show()
+        (dialog.context as LifecycleOwner).lifecycleScope.requestMain {
+            withContext(Dispatchers.IO){
+                //网络加载
+            }
+            // 刷新UI
+        }
+        dialog.cancel()
+
         requestMain {
             delay(2000)
             Toast.makeText(this@MainActivity,"haha",Toast.LENGTH_SHORT).show()
@@ -27,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         requestIO {
             loadNetData()
         }
-        delayMainThread(100){
+        delayMain(100){
             Toast.makeText(this@MainActivity,"haha",Toast.LENGTH_SHORT).show()
         }
     }
