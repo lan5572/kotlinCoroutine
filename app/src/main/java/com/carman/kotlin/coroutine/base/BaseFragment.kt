@@ -15,19 +15,14 @@ import com.carman.kotlin.coroutine.extensions.getViewBinding
  * @time 2021-4-16 13:25
  */
 open abstract class BaseFragment<VB : ViewDataBinding>: Fragment(),BaseBinding<VB> {
-    internal lateinit var mBinding:VB
+    protected lateinit var mBinding:VB
         private set
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         mBinding = getViewBinding(inflater,container)
-        lifecycleScope.launchWhenStarted {  }
         return mBinding.root
     }
 
