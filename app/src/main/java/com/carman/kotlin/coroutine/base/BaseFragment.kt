@@ -14,7 +14,7 @@ import com.carman.kotlin.coroutine.extensions.getViewBinding
  *@author carman
  * @time 2021-4-16 13:25
  */
-open abstract class BaseFragment<VB : ViewDataBinding>: Fragment(),BaseBinding<VB> {
+abstract class BaseFragment<VB : ViewDataBinding>: Fragment(),BaseBinding<VB> {
     protected lateinit var mBinding:VB
         private set
     override fun onCreateView(

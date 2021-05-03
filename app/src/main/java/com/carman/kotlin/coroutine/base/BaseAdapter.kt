@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.carman.kotlin.coroutine.extensions.getViewBinding
 import java.util.*
 
 /**
@@ -12,7 +13,9 @@ import java.util.*
  *@author carman
  * @time 2021-4-16 13:25
  */
-abstract class BaseMultiTypeAdapter<T> : RecyclerView.Adapter<BaseMultiTypeAdapter.MultiTypeViewHolder>() {
+
+
+abstract class BaseAdapter<T, VB : ViewDataBinding> : RecyclerView.Adapter<BaseAdapter.BindViewHolder<VB>>() {
 
     private var mData: List<T> = mutableListOf()
 
@@ -30,13 +33,13 @@ abstract class BaseMultiTypeAdapter<T> : RecyclerView.Adapter<BaseMultiTypeAdapt
                 override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
                     val oldData: T = mData[oldItemPosition]
                     val newData: T = it[newItemPosition]
-                    return this@BaseMultiTypeAdapter.areItemsTheSame(oldData, newData)
+                    return this@BaseAdapter.areItemsTheSame(oldData, newData)
                 }
 
                 override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
                     val oldData: T = mData[oldItemPosition]
                     val newData: T = it[newItemPosition]
-                    return this@BaseMultiTypeAdapter.areItemContentsTheSame(oldData, newData, oldItemPosition, newItemPosition)
+                    return this@BaseAdapter.areItemContentsTheSame(oldData, newData, oldItemPosition, newItemPosition)
                 }
             })
             mData = data
@@ -50,7 +53,7 @@ abstract class BaseMultiTypeAdapter<T> : RecyclerView.Adapter<BaseMultiTypeAdapt
 
     fun addData(data: List<T>?, position: Int? = null) {
         if (!data.isNullOrEmpty()) {
-            with(LinkedList(mData)) {
+            with(LinkedList(mData)){
                 position?.let {
                     val startPosition = when {
                         it < 0 -> 0
@@ -58,7 +61,7 @@ abstract class BaseMultiTypeAdapter<T> : RecyclerView.Adapter<BaseMultiTypeAdapt
                         else -> it
                     }
                     addAll(startPosition, data)
-                } ?: addAll(data)
+                }?: addAll(data)
                 setData(this)
             }
         }
@@ -88,24 +91,24 @@ abstract class BaseMultiTypeAdapter<T> : RecyclerView.Adapter<BaseMultiTypeAdapt
         return mData.size
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MultiTypeViewHolder {
-        return MultiTypeViewHolder(onCreateMultiViewHolder(parent, viewType))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BindViewHolder<VB> {
+        return with(getViewBinding<VB>(LayoutInflater.from(parent.context), parent,1)) {
+            setListener()
+            BindViewHolder(this)
+        }
     }
 
-    override fun onBindViewHolder(holder: MultiTypeViewHolder, position: Int) {
-        holder.onBindViewHolder(holder, getItem(position), position)
-        holder.binding.executePendingBindings()
+    override fun onBindViewHolder(holder: BindViewHolder<VB>, position: Int) {
+        with(holder.binding){
+           onBindViewHolder(getItem(position), position)
+           executePendingBindings()
+        }
     }
 
-    abstract fun MultiTypeViewHolder.onBindViewHolder(holder: MultiTypeViewHolder, item: T, position: Int)
+    open fun VB.setListener() {}
 
-    abstract fun onCreateMultiViewHolder(parent: ViewGroup, viewType: Int): ViewDataBinding
+    abstract fun VB.onBindViewHolder(bean: T, position: Int)
 
-    protected fun <VB :ViewDataBinding> loadLayout(vbClass: Class<VB>,parent: ViewGroup): VB {
-        val inflate = vbClass.getDeclaredMethod("inflate", LayoutInflater::class.java, ViewGroup::class.java, Boolean::class.java)
-        return inflate.invoke(null, LayoutInflater.from(parent.context), parent, false) as VB
-    }
-
-    class MultiTypeViewHolder(var binding: ViewDataBinding) :
+    class BindViewHolder<M : ViewDataBinding>(var binding: M) :
             RecyclerView.ViewHolder(binding.root)
 }

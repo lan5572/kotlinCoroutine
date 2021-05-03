@@ -1,10 +1,11 @@
-package com.carman.kotlin.coroutine
+package com.carman.kotlin.coroutine.ui
 
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.carman.kotlin.coroutine.R
 import kotlinx.coroutines.*
 import kotlin.coroutines.ContinuationInterceptor
 import kotlin.coroutines.CoroutineContext

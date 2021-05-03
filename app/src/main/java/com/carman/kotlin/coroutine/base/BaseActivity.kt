@@ -14,16 +14,12 @@ import com.carman.kotlin.coroutine.extensions.getViewBinding
  */
 abstract class BaseActivity<VB : ViewDataBinding> : AppCompatActivity(), BaseBinding<VB> {
 
-    internal val mBinding: VB by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
+    internal val mBinding: VB by lazy(mode = LazyThreadSafetyMode.NONE) {
        getViewBinding(layoutInflater)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (intent.flags and Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT != 0) {
-            finish()
-            return
-        }
         setContentView(mBinding.root)
         mBinding.initBinding()
     }
