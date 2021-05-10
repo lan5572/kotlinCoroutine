@@ -1,13 +1,11 @@
 package com.carman.kotlin.coroutine.extensions
 
-import android.app.Activity
-import android.content.ClipboardManager
-import android.content.Context
-import android.util.Log
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.*
+import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import com.carman.kotlin.coroutine.exception.GlobalCoroutineExceptionHandler
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -23,7 +21,7 @@ public fun NormalScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
  */
 inline fun AppCompatActivity.requestMain(
         errCode: Int = -1, errMsg: String = "", report: Boolean = false,
-        crossinline block: suspend CoroutineScope.() -> Unit) {
+        noinline block: suspend CoroutineScope.() -> Unit) {
     lifecycleScope.launch(GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
         block.invoke(this)
     }
@@ -38,7 +36,7 @@ inline fun AppCompatActivity.requestMain(
  */
 inline fun AppCompatActivity.requestIO(
         errCode: Int = -1, errMsg: String = "", report: Boolean = false,
-        crossinline block: suspend CoroutineScope.() -> Unit): Job {
+        noinline block: suspend CoroutineScope.() -> Unit): Job {
     return lifecycleScope.launch(Dispatchers.IO + GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
         block.invoke(this)
     }
@@ -52,7 +50,7 @@ inline fun AppCompatActivity.requestIO(
  */
 inline fun AppCompatActivity.delayMain(
         delayTime: Long,errCode: Int = -1, errMsg: String = "", report: Boolean = false,
-       crossinline block: suspend CoroutineScope.() -> Unit) {
+        noinline block: suspend CoroutineScope.() -> Unit) {
     lifecycleScope.launch(GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
         withContext(Dispatchers.IO) {
             delay(delayTime)
@@ -69,7 +67,7 @@ inline fun AppCompatActivity.delayMain(
  */
 inline fun Fragment.requestMain(
         errCode: Int = -1, errMsg: String = "", report: Boolean = false,
-        crossinline block: suspend CoroutineScope.() -> Unit) {
+        noinline block: suspend CoroutineScope.() -> Unit) {
     lifecycleScope.launch(GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
         block.invoke(this)
     }
@@ -83,7 +81,7 @@ inline fun Fragment.requestMain(
  */
 inline fun Fragment.requestIO(
         errCode: Int = -1, errMsg: String = "", report: Boolean = false,
-        crossinline block: suspend CoroutineScope.() -> Unit) {
+        noinline block: suspend CoroutineScope.() -> Unit) {
     lifecycleScope.launch(Dispatchers.IO + GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
         block.invoke(this)
     }
@@ -99,7 +97,7 @@ inline fun Fragment.requestIO(
  */
 inline fun Fragment.delayMain(
         delayTime: Long, errCode: Int = -1, errMsg: String = "", report: Boolean = false,
-        crossinline block: suspend CoroutineScope.() -> Unit) {
+        noinline block: suspend CoroutineScope.() -> Unit) {
     lifecycleScope.launch(GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
         withContext(Dispatchers.IO) {
             delay(delayTime)
@@ -119,7 +117,7 @@ inline fun Fragment.delayMain(
  */
 inline fun ViewModel.requestMain(
         errCode: Int = -1, errMsg: String = "", report: Boolean = false,
-        crossinline block: suspend CoroutineScope.() -> Unit) {
+        noinline block: suspend CoroutineScope.() -> Unit) {
     viewModelScope.launch(GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
         block.invoke(this)
     }
@@ -133,7 +131,7 @@ inline fun ViewModel.requestMain(
  */
 inline fun ViewModel.requestIO(
         errCode: Int = -1, errMsg: String = "", report: Boolean = false,
-        crossinline block: suspend CoroutineScope.() -> Unit) {
+        noinline block: suspend CoroutineScope.() -> Unit) {
     viewModelScope.launch(Dispatchers.IO + GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
         block.invoke(this)
     }
@@ -149,7 +147,7 @@ inline fun ViewModel.requestIO(
  */
 inline fun ViewModel.delayMain(
         delayTime: Long, errCode: Int = -1, errMsg: String = "", report: Boolean = false,
-        crossinline block: suspend CoroutineScope.() -> Unit) {
+        noinline block: suspend CoroutineScope.() -> Unit) {
     viewModelScope.launch(GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
         withContext(Dispatchers.IO) {
             delay(delayTime)
@@ -160,14 +158,14 @@ inline fun ViewModel.delayMain(
 
 inline fun LifecycleCoroutineScope.requestMain(
     errCode: Int = -1, errMsg: String = "", report: Boolean = false,
-    crossinline block: suspend CoroutineScope.() -> Unit) {
+    noinline block: suspend CoroutineScope.() -> Unit) {
     launch(GlobalCoroutineExceptionHandler(errCode, errMsg, report)) {
         block.invoke(this)
     }
 }
 
 @ExperimentalStdlibApi
-suspend inline fun <T> CoroutineScope.delayWithContext(delayTime: Long, context: CoroutineContext, crossinline block: suspend CoroutineScope.() -> T) {
+suspend inline fun <T> CoroutineScope.delayWithContext(delayTime: Long, context: CoroutineContext, noinline block: suspend CoroutineScope.() -> T) {
     if (context[CoroutineDispatcher] is MainCoroutineDispatcher) {
         withContext(Dispatchers.IO) {
             delay(delayTime)
@@ -178,7 +176,3 @@ suspend inline fun <T> CoroutineScope.delayWithContext(delayTime: Long, context:
     block.invoke(this)
 
 }
-
-
-
-

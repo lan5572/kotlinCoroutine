@@ -6,11 +6,16 @@ import retrofit2.http.*
 
 interface CoroutineService {
 
-    /**
-     * app启动
-     */
-    @GET("public/app/start")
-    suspend fun getWeather(): CResponse<Weather>
+    @GET("/9-2")
+    suspend fun getWeather(@Query("area") area: String): CResponse<Weather>
+
+
+    @FormUrlEncoded
+    @POST("/9-2")
+    suspend fun postWeather(
+        @Field("area") area: String
+    ): CResponse<Weather>
+
 
     /**
      * 获取系统全局配置

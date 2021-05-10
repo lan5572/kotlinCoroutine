@@ -16,7 +16,7 @@ object OkHttpClientManager {
         return OkHttpClient.Builder().apply {
             addInterceptor(CommonInterceptor())
             addInterceptor(logging)
-            addInterceptor(ErrorInterceptor())
+//            addInterceptor(ErrorInterceptor())
             followSslRedirects(true)
         }.build()
     }
