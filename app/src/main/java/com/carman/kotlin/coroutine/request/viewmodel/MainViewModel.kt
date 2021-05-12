@@ -4,14 +4,16 @@ import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.carman.kotlin.coroutine.R
+import com.carman.kotlin.coroutine.bean.User
 import com.carman.kotlin.coroutine.bean.Weather
 import com.carman.kotlin.coroutine.extensions.requestMain
 import com.carman.kotlin.coroutine.request.repository.MainRepository
-import kotlinx.coroutines.launch
 
 class MainViewModel(private val repository: MainRepository):ViewModel() {
+    private val _user:MutableLiveData<User> = MutableLiveData()
+    val mUser: LiveData<User> = _user
+
 
     private val _weather:MutableLiveData<Weather> = MutableLiveData()
     val mWeather: LiveData<Weather> = _weather

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">kotlinCoroutine</string>
+    <string name="test">hello %1$s , hello %1$s</string>
 </resources>

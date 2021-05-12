@@ -13,6 +13,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -42,12 +43,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     }
 
     override fun initObserve() {
-        viewModel.mWeather.observe(this) {
-            mBinding.contentTv.text = "$it"
+        val viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        viewModel.mUser.observe(this) {
+            Log.d("mUser","$it")
         }
     }
 
     override fun ActivityMainBinding.initBinding() {
+
         this.mainViewModel = viewModel
     }
 
