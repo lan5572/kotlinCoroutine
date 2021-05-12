@@ -35,4 +35,11 @@ abstract class BaseFragment<VB : ViewDataBinding>: Fragment(),BaseBinding<VB> {
     open fun onBackPressed():Boolean {
         return false
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if(::mBinding.isInitialized){
+            mBinding.unbind()
+        }
+    }
 }

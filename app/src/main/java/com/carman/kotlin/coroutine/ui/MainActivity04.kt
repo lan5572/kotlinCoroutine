@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.carman.kotlin.coroutine.R
 import com.carman.kotlin.coroutine.base.BaseActivity
+import com.carman.kotlin.coroutine.base.BaseVBActivity
 import com.carman.kotlin.coroutine.bean.Person
 import com.carman.kotlin.coroutine.bean.Student
 import com.carman.kotlin.coroutine.bean.Teacher
@@ -34,7 +35,7 @@ import kotlinx.coroutines.*
 /**
  * 第四章节案例
  */
-class MainActivity04 : BaseActivity<ActivityMain04Binding>() {
+class MainActivity04 : BaseVBActivity<ActivityMain04Binding>() {
 
     override fun initObserve() {
 

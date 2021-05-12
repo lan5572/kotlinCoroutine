@@ -37,20 +37,16 @@ import kotlinx.coroutines.*
  * @author carman
  * @time 2021-4-26 12:11
  */
-class MainActivity : BaseActivity<ActivityMainBinding>() {
-    private val viewModel by viewModels<MainViewModel> {
-        ViewModelUtils.provideMainViewModelFactory()
-    }
+class MainActivity : BaseActivity<ActivityMainBinding,MainViewModel>() {
 
     override fun initObserve() {
-        val viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-        viewModel.mUser.observe(this) {
-            Log.d("mUser","$it")
+        viewModel.getWeather("深圳")
+        viewModel.mWeather.observe(this){
+            mBinding.contentTv.text ="$it"
         }
     }
 
     override fun ActivityMainBinding.initBinding() {
-
         this.mainViewModel = viewModel
     }
 
