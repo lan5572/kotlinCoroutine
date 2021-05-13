@@ -11,7 +11,7 @@ import com.carman.kotlin.coroutine.extensions.requestMain
 import com.carman.kotlin.coroutine.request.repository.MainRepository
 
 class MainViewModel(private val repository: MainRepository):ViewModel() {
-    private val _user:MutableLiveData<User> = MutableLiveData()
+    private val _user: MutableLiveData<User> = MutableLiveData(User(1,"测试"))
     val mUser: LiveData<User> = _user
 
 

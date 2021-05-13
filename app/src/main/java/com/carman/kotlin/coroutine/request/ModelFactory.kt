@@ -6,6 +6,11 @@ import com.carman.kotlin.coroutine.request.repository.MainRepository
 import com.carman.kotlin.coroutine.request.viewmodel.MainViewModel
 
 
+fun provideMainViewModelFactory(
+): MainViewModelFactory {
+    return MainViewModelFactory(MainRepository())
+}
+
 class MainViewModelFactory(
     private val repository: MainRepository
 ) : ViewModelProvider.Factory {

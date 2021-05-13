@@ -26,8 +26,10 @@ import com.carman.kotlin.coroutine.databinding.ActivityMainBinding
 import com.carman.kotlin.coroutine.extensions.*
 import com.carman.kotlin.coroutine.interf.ItemClickListener
 import com.carman.kotlin.coroutine.request.ViewModelUtils
+import com.carman.kotlin.coroutine.request.provideMainViewModelFactory
 import com.carman.kotlin.coroutine.request.repository.MainRepository
 import com.carman.kotlin.coroutine.request.viewmodel.MainViewModel
+import com.carman.kotlin.coroutine.request.viewmodel.TestViewModel
 import com.carman.kotlin.coroutine.ui.adapter.HomeAdapter
 import com.carman.kotlin.coroutine.ui.adapter.SecondAdapter
 import kotlinx.coroutines.*
@@ -37,17 +39,20 @@ import kotlinx.coroutines.*
  * @author carman
  * @time 2021-4-26 12:11
  */
-class MainActivity : BaseActivity<ActivityMainBinding,MainViewModel>() {
+class MainActivity : BaseActivity<ActivityMainBinding, TestViewModel>(provideMainViewModelFactory()) {
 
     override fun initObserve() {
-        viewModel.getWeather("深圳")
-        viewModel.mWeather.observe(this){
-            mBinding.contentTv.text ="$it"
+        viewModel.mUser.observe(this){
+            Log.d("TestViewModel","user: $it")
         }
+//        viewModel.getWeather("深圳")
+//        viewModel.mWeather.observe(this){
+//            mBinding.contentTv.text ="$it"
+//        }
     }
 
     override fun ActivityMainBinding.initBinding() {
-        this.mainViewModel = viewModel
+//        this.mainViewModel = viewModel
     }
 
 }
