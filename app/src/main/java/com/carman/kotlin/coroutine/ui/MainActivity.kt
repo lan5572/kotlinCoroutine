@@ -32,6 +32,7 @@ import com.carman.kotlin.coroutine.request.viewmodel.MainViewModel
 import com.carman.kotlin.coroutine.request.viewmodel.TestViewModel
 import com.carman.kotlin.coroutine.ui.adapter.HomeAdapter
 import com.carman.kotlin.coroutine.ui.adapter.SecondAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 
 /**
@@ -39,11 +40,14 @@ import kotlinx.coroutines.*
  * @author carman
  * @time 2021-4-26 12:11
  */
-class MainActivity : BaseActivity<ActivityMainBinding, TestViewModel>(provideMainViewModelFactory()) {
+class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(provideMainViewModelFactory()) {
 
+    val mainViewModel:MainViewModel by viewModels(){
+        provideMainViewModelFactory()
+    }
     override fun initObserve() {
         viewModel.mUser.observe(this){
-            Log.d("TestViewModel","user: $it")
+            Log.d("MainViewModel","user: $it")
         }
 //        viewModel.getWeather("深圳")
 //        viewModel.mWeather.observe(this){

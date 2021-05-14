@@ -17,17 +17,21 @@ import com.carman.kotlin.coroutine.request.ViewModelUtils
  *@author carman
  * @time 2021-4-16 13:25
  */
-abstract class BaseFragment<VB : ViewDataBinding,VM:ViewModel>(private val factory: ViewModelProvider.Factory? = null): Fragment(),BaseBinding<VB> {
-    protected lateinit var mBinding:VB
+abstract class BaseFragment<VB : ViewDataBinding, VM : ViewModel>(
+    private val share: Boolean = false,
+    private val factory: ViewModelProvider.Factory? = null
+) : Fragment(), BaseBinding<VB> {
+    protected lateinit var mBinding: VB
         private set
-    protected lateinit var viewModel:VM
+    protected lateinit var viewModel: VM
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mBinding = getViewBinding(inflater,container)
-        viewModel = ViewModelUtils.createViewModel(this,factory,1)
+        mBinding = getViewBinding(inflater, container)
+        viewModel = if (share) ViewModelUtils.createActivityViewModel(this, factory, 1)
+            else ViewModelUtils.createViewModel(this, factory, 1)
         return mBinding.root
     }
 
@@ -37,13 +41,13 @@ abstract class BaseFragment<VB : ViewDataBinding,VM:ViewModel>(private val facto
     }
 
 
-    open fun onBackPressed():Boolean {
+    open fun onBackPressed(): Boolean {
         return false
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if(::mBinding.isInitialized){
+        if (::mBinding.isInitialized) {
             mBinding.unbind()
         }
     }

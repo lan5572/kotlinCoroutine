@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.carman.kotlin.coroutine.request.repository.MainRepository
 import com.carman.kotlin.coroutine.request.viewmodel.MainViewModel
+import javax.inject.Inject
 
 
 fun provideMainViewModelFactory(
@@ -11,7 +12,7 @@ fun provideMainViewModelFactory(
     return MainViewModelFactory(MainRepository())
 }
 
-class MainViewModelFactory(
+class MainViewModelFactory @Inject constructor(
     private val repository: MainRepository
 ) : ViewModelProvider.Factory {
 
